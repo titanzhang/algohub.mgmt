@@ -70,19 +70,13 @@ ModifySectionGetController.prototype.loadAlgoFile = function() {
 		const SourceFile = load('common.SourceFile');
 		const sourceFile = new SourceFile.File();
 		this.result.source = sourceFile;
-		const nodegit = require('nodegit'), gitconfig = loadConfig('git').config;
 
-		return nodegit.Repository.open(getSourcePath())
-			.catch( () => {
-				return nodegit.Clone(gitconfig.url, getSourcePath(), {});
+		return load('common.Git').updateLocal()
+			.then( () => {
+				return sourceFile.loadFromFile(self.params.algoName);
 			})
-			.then( (repo) => {
-				// TODO: fetch latest & set header
-				return self.params.algoName;
-			})
-			.then(sourceFile.loadFromFile.bind(sourceFile))
 			.then( (result) => {
-				return Promise.resolve({isNew: result.new});
+				return {isNew: result.new};
 			});
 	} catch(e) {
 		load('common.Utils').log('ModifySectionGetController.loadAlgoFile', e);

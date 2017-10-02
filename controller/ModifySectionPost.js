@@ -94,7 +94,10 @@ ModifySectionPostController.prototype.applyChanges = function() {
 		this.result.isNew = false;
 
 		if (this.params.algoAll === undefined) {
-			return sourceFile.loadFromFile(this.params.algoName)
+			return load('common.Git').updateLocal()
+				.then( () => {
+					return sourceFile.loadFromFile(this.params.algoName)					
+				})
 				.then( (result) => {
 					if (result.new) {
 						self.result.isNew = true;
@@ -102,14 +105,14 @@ ModifySectionPostController.prototype.applyChanges = function() {
 					if (self.params.algoTags !== undefined) {
 						sourceFile.setTags(self.params.algoTags);
 					}
-					return Promise.resolve({});
+					return {};
 				});
 		} else {
 			if (!sourceFile.loadFromString(this.params.algoAll)) {
 				return Promise.reject({message: 'Format error'});
 			}
 			sourceFile.setSection(this.params.algoSection, this.params.algoMod);
-			return Promise.resolve({});
+			return {};
 		}
 
 	} catch(e) {

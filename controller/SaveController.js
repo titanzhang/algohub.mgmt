@@ -69,7 +69,10 @@ SaveController.prototype.applyChanges = function() {
 		this.result.source = sourceFile;
 
 		if (this.params.algoAll === undefined) {
-			return sourceFile.loadFromFile(this.params.algoName)
+			return load('common.Git').updateLocal()
+				.then( () => {
+					return sourceFile.loadFromFile(this.params.algoName)
+				})
 				.then( (result) => {
 					if (self.params.algoTags !== undefined) {
 						sourceFile.setTags(self.params.algoTags);
@@ -96,7 +99,10 @@ SaveController.prototype.applyChanges = function() {
 
 SaveController.prototype.saveFile = function() {
 	try {
-		return this.result.source.save();
+		const sourceFile = this.result.source;
+
+		return load('common.Git').updateLocal()
+			.then(sourceFile.save.bind(sourceFile));
 	} catch(e) {
 		load('common.Utils').log('SaveController.applyChanges', e);
 		return Promise.reject({message: 'Internal Error'});
