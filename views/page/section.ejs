@@ -1,0 +1,62 @@
+<%
+var nextStep = '', currentStepTitle = '';
+for (let i = 0; i < steps.length - 1; i ++) {
+  if (steps[i].name === step) {
+    currentStepTitle = steps[i].title;
+    nextStep = steps[i + 1].name;
+  }
+}
+if (currentStepTitle.length === 0) {
+  currentStepTitle = steps[steps.length - 1].title;
+}
+%>
+<!DOCTYPE html>
+<html>
+  <head>
+    <%- include('../html_head', {customTitle:customTitle}) %>
+    <link href="<%= site.csspool %>/simplemde.min.css" rel="stylesheet">
+  </head>
+
+  <body>
+    <!-- Page header -->
+    <%- include('../header', {site:site}) %>
+
+    <!-- Page Content -->
+    <div class="container">
+      <div class="row"><%- include('../module/navStep', {step: step, steps: steps}) %></div>
+
+      <div class="row"><h2>Edit Algorightm <% if (locals.algoName !== undefined) { %> - <%= algoName %><%}%></h2></div>
+      <div class="row">
+        <form class="well" id="editForm" method="post">
+          <div class="form-group">
+            <label for="algoContent"><%= currentStepTitle %></label>
+            <textarea class='form-control' id="algoEditor"></textarea>
+          </div>
+          <% if (nextStep.length > 0) { %>
+          <button type="button" class="btn btn-primary" ahlink="edit" ahaction="<%= nextStep %>">Next</button>
+          <% } %>
+          <button type="button" id="linkFinish" class="btn btn-primary" ahlink="finish">Finish</button>
+          <input type="hidden" name="algoAll" value="<%= algoContent %>" />
+          <input type="hidden" name="algoSection" value="<%= step %>" />
+          <input type="hidden" id="algoMod" name="algoMod" value="<%= algoMod %>" />
+        </form>
+        <script>
+          var editFormConfig = {
+            baseUrl: '/mgmt/',
+            saveUrl: '/mgmt/save',
+            algoName: '<%= algoName %>',
+            formId: 'editForm',
+            editorId: 'algoEditor',
+            modId: 'algoMod',
+            finishId: 'linkFinish'
+          };
+          ahjs.addConfig('editFormConfig', editFormConfig);
+        </script>
+      <!-- Page footer -->
+      <hr/>
+      <%- include('../footer') %>
+    </div>
+    <script src="<%= site.jspool %>/simplemde.min.js"></script>
+    <script src="<%= site.jspool %>/pageSection.js"></script>
+  </body>
+</html>

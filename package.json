@@ -1,0 +1,27 @@
+{
+  "name": "AlgoHub",
+  "version": "1.0.0",
+  "description": "Algorithm Hub management",
+  "main": "server.js",
+  "dependencies": {
+    "body-parser": "^1.16.0",
+    "ejs": "^2.5.5",
+    "express": "^4.14.0",
+    "nodegit": "^0.19.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/titanzhang/cpp.AlgoHub.git"
+  },
+  "author": "Liang Zhang",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/titanzhang/cpp.AlgoHub/issues"
+  },
+  "homepage": "https://github.com/titanzhang/cpp.AlgoHub#readme"
+}

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <%- include('../html_head', {customTitle:customTitle}) %>
+  </head>
+
+  <body>
+    <!-- Page header -->
+    <%- include('../header', {site:site}) %>
+
+    <!-- Page Content -->
+    <div class="container">
+      <div class="row"><%- include('../module/navStep', {step:'name', steps: steps}) %></div>
+
+      <div class="row">
+        <form class="well" id="editForm" method="post">
+          <div class="form-group">
+            <label for="algoName">Algorithm name</label>
+            <input type="text" class="form-control" id="algoName" name="algoName" placeholder="Algorithm name" <% if (locals.algoName !== undefined) { %> value="<%= algoName %>" <% } %> <%if (!isNew){%>readonly<%}%>
+          </div>
+          <div class="form-group">
+            <label for="algoTags">Associated tags</label>
+            <input type="text" class="form-control" id="algoTags" name="algoTags" placeholder="tag1,tag2,tag3 ..." <% if (locals.algoTags !== undefined) { %>value="<%= algoTags %>"<% } %>>
+          </div>
+          <button type="button" class="btn btn-primary" ahlink="edit" ahaction="section_desc">Next</button>
+          <button type="button" class="btn btn-primary" ahlink="finish" id="linkFinish">Finish</button>
+          <% if (locals.algoContent !== undefined){ %><input type="hidden" name="algoAll" value="<%= algoContent %>" /><% } %>
+        </form>
+        <script>
+          var editFormConfig = {
+            baseUrl: '/mgmt/',
+            saveUrl: '/mgmt/save',
+            formId: 'editForm',
+            nameId: 'algoName',
+            tagsId: 'algoTags',
+            finishId: 'linkFinish'
+          };
+          ahjs.addConfig('editFormConfig', editFormConfig);
+        </script>
+      </div>
+      <!-- Page footer -->
+      <hr/>
+      <%- include('../footer') %>
+    </div>
+    <script src="<%= site.jspool %>/pageName.js"></script>
+  </body>
+</html>
