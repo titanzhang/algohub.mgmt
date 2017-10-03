@@ -6,7 +6,7 @@ global.load = function(moduleName) {
 }
 
 global.loadConfig = function(configName) {
-	let jsName = baseDir + '../config/web/' + configName + '.js';
+	let jsName = baseDir + '../config/mgmt/' + configName + '.js';
 	if (!require('fs').existsSync(jsName)) {
 		jsName = baseDir + 'config/' + configName + '.js';
 	}

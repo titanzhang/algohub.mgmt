@@ -79,7 +79,9 @@ Git.push = function() {
 			.then( (remote) => {
 				return remote.push(["refs/heads/master:refs/heads/master"],
 					{
-						callbacks: {credentials: self.cred()}
+						callbacks: {
+							credentials: self.cred()
+						}
 					});
 			})
 	} catch(e) {
@@ -90,8 +92,10 @@ Git.push = function() {
 
 Git.cred = function() {
 	const token = gitconfig.token;
+	let tries = 0;
 
 	const callback = function(url, userName) {
+		if (tries ++ > 3) return nodegit.Cred.defaultNew();
 		return nodegit.Cred.userpassPlaintextNew(token, 'x-oauth-basic');
 	};
 	return callback;

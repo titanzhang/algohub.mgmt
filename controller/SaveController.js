@@ -1,6 +1,9 @@
 module.exports = function(request, response) {
 	var renderPage = function(result) {
-		response.send(result);
+		response.send({
+			status: true,
+			result: result
+		});
 	};
 
 	var renderError = function(error) {
