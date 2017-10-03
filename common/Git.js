@@ -1,6 +1,8 @@
-var Git = {};
 var nodegit = require('nodegit');
 var gitconfig = loadConfig('git').config;
+var hostname = require('os').hostname();
+
+var Git = {};
 
 Git.updateLocal = function() {
 	try {
@@ -27,4 +29,72 @@ Git.updateLocal = function() {
 	}
 };
 
-module.exports.updateLocal = Git.updateLocal;
+Git.commit = function(filePath) {
+	try {
+		let repo, index, oid;
+		const name = 'algomgmt', email = name + '@' + hostname;
+
+		return nodegit.Repository.open(getSourcePath())
+			.then( (openResult) => {
+				repo = openResult;
+				return repo.refreshIndex();
+			})
+			.then( (indexResult) => {
+				index = indexResult;
+				return index.addByPath(filePath);
+			})
+			.then( () => {
+				return index.write();
+			})
+			.then( () => {
+				return index.writeTree();
+			})
+			.then( (oidResult) => {
+				oid = oidResult;
+				return nodegit.Reference.nameToId(repo, "HEAD");
+			})
+			.then( (head) => {
+				return repo.getCommit(head);
+			})
+			.then( (parent) => {
+				const d = new Date();
+				const author = nodegit.Signature.create(name, email, d.getTime() / 1000, -d.getTimezoneOffset());
+
+				return repo.createCommit("HEAD", author, author, "update", oid, [parent]);
+			});
+	} catch(e) {
+		load('common.Utils').log('Git.commit', e);
+		return Promise.reject(e);
+	}
+};
+
+Git.push = function() {
+	try {
+		const self = this;
+
+		return nodegit.Repository.open(getSourcePath())
+			.then( (repo) => {
+				return repo.getRemote(gitconfig.remote);
+			})
+			.then( (remote) => {
+				return remote.push(["refs/heads/master:refs/heads/master"],
+					{
+						callbacks: {credentials: self.cred()}
+					});
+			})
+	} catch(e) {
+		load('common.Utils').log('Git.push', e);
+		return Promise.reject(e);
+	}
+}
+
+Git.cred = function() {
+	const token = gitconfig.token;
+
+	const callback = function(url, userName) {
+		return nodegit.Cred.userpassPlaintextNew(token, 'x-oauth-basic');
+	};
+	return callback;
+};
+
+module.exports.Git = Git;

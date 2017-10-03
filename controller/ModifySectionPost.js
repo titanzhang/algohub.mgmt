@@ -94,7 +94,7 @@ ModifySectionPostController.prototype.applyChanges = function() {
 		this.result.isNew = false;
 
 		if (this.params.algoAll === undefined) {
-			return load('common.Git').updateLocal()
+			return load('common.Git').Git.updateLocal()
 				.then( () => {
 					return sourceFile.loadFromFile(this.params.algoName)					
 				})

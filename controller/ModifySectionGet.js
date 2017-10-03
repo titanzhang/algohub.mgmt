@@ -71,7 +71,7 @@ ModifySectionGetController.prototype.loadAlgoFile = function() {
 		const sourceFile = new SourceFile.File();
 		this.result.source = sourceFile;
 
-		return load('common.Git').updateLocal()
+		return load('common.Git').Git.updateLocal()
 			.then( () => {
 				return sourceFile.loadFromFile(self.params.algoName);
 			})

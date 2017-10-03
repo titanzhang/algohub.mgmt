@@ -117,9 +117,19 @@ SourceFile.prototype.loadDefault = function(algoName) {
 	this.head.title = algoName;
 };
 
+SourceFile.prototype.getRelativePath = function(algoName) {
+	if (algoName === undefined) algoName = this.head.title;
+	return require('path').join(this.path, this.algoToFileName(algoName) + '.md');
+};
+
+SourceFile.prototype.getFilePath = function(algoName) {
+	if (algoName === undefined) algoName = this.head.title;
+	return require('path').resolve(getSourcePath(), this.getRelativePath(algoName));
+};
+
 SourceFile.prototype.loadFromFile = function(algoName) {
 	return new Promise( (resolve, reject) => {
-		const fileName = getSourcePath() + '/' + this.path + '/' + this.algoToFileName(algoName) + '.md';
+		const fileName = this.getFilePath(algoName);
 		if (!require('fs').existsSync(fileName)) {
 			this.loadDefault(algoName);
 			return resolve({new: true});
@@ -190,7 +200,7 @@ SourceFile.prototype.parse = function(stringContent) {
 
 SourceFile.prototype.save = function() {
 	return new Promise( (resolve, reject) => {
-		const fileName = getSourcePath() + '/' + this.path + '/' + this.algoToFileName(this.head.title) + '.md';
+		const fileName = this.getFilePath();
 
 		require('fs').writeFile(fileName, this.toString(), (err) => {
 			if (err) {
