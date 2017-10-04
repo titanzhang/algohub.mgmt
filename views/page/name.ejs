@@ -38,10 +38,12 @@
           ahjs.addConfig('editFormConfig', editFormConfig);
         </script>
       </div>
+      <%- include('../module/dialog') %>
       <!-- Page footer -->
       <hr/>
       <%- include('../footer') %>
     </div>
+    <script src="<%= site.jspool %>/dialog.js"></script>
     <script src="<%= site.jspool %>/pageName.js"></script>
   </body>
 </html>

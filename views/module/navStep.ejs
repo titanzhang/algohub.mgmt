@@ -5,12 +5,17 @@ for (let i in steps) {
   var stepText = steps[i].title;
   if (stepName === step) {
 %>
-<a href="#" class="btn btn-default disabled" role="button" ahlink="edit" ahaction="<%= stepName %>"><%= stepText %></a> >
+<a href="#" class="btn btn-default disabled" role="button" ahlink="edit" ahaction="<%= stepName %>"><%= stepText %></a>
 <%
   } else {
 %>
-<a href="#" class="btn btn-default active" role="button" ahlink="edit" ahaction="<%= stepName %>"><%= stepText %></a> >
+<a href="#" class="btn btn-default active" role="button" ahlink="edit" ahaction="<%= stepName %>"><%= stepText %></a>
 <%
+  }
+  if (i < steps.length - 1) {
+%>
+ >
+<%  
   }
 }
 %>
