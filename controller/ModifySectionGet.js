@@ -129,7 +129,7 @@ ModifySectionGetController.prototype.run = function() {
 			.then( (loadResult) => {
 				self.result.isNew = loadResult.isNew;
 				if (loadResult.isNew && self.params.step !== 'name') {
-					const url = '/mgmt/' + self.params.algoName + '/name';
+					const url = '/' + self.params.algoName + '/name';
 					return Promise.reject({type:'redirect', url:url});
 				}
 				return Promise.resolve({});
