@@ -64,7 +64,7 @@ SourceFile.prototype.setSection = function(name, content) {
 SourceFile.prototype.algoToFileName = function(algoName) {
 	algoName = algoName.replace(/ /g, '-');
 	algoName = algoName.replace(/[^A-Za-z0-9-]/g, '');
-	return algoName;
+	return algoName.toLowerCase();
 };
 
 SourceFile.prototype.getDefaultContent = function() {
