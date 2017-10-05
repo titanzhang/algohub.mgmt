@@ -112,7 +112,7 @@ SaveController.prototype.saveFile = function() {
 				return Git.commit(sourceFile.getRelativePath());
 			})
 			.then( () => {
-				return Promise.resolve({});
+				// return Promise.resolve({});
 				return Git.push();
 			});
 	} catch(e) {
