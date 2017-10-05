@@ -2,14 +2,18 @@
 var Sections = {
 	DESC: 'section_desc',
 	COMP: 'section_complexity',
-	PCODE: 'section_pseudocode'
+	PCODE: 'section_pseudocode',
+	EDU: 'section_edu',
+	APP: 'section_app'
 };
-var SectionOrder = [Sections.DESC, Sections.COMP, Sections.PCODE];
+var SectionOrder = [Sections.DESC, Sections.COMP, Sections.PCODE, Sections.EDU, Sections.APP];
 var SectionText = {};
 SectionText['name'] = 'Name/Tags';
 SectionText[Sections.DESC] = 'Description';
 SectionText[Sections.COMP] = 'Complexity';
 SectionText[Sections.PCODE] = 'Pseudo Code';
+SectionText[Sections.EDU] = 'Education';
+SectionText[Sections.APP] = 'Applications';
 
 var SourceTemplate = {
 	header:
