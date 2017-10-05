@@ -26,12 +26,6 @@ var ModifySectionPostController = function(request) {
 	this.request = request;
 	this.params = {};
 	this.result = {};
-
-	const Sections = load('common.SourceFile').Sections;
-	this.sectionText = {'name': 'Name/Tags'};
-	this.sectionText[Sections.DESC] = 'Description';
-	this.sectionText[Sections.COMP] = 'Complexity';
-	this.sectionText[Sections.PCODE] = 'Pseudo Code';
 }
 
 ModifySectionPostController.prototype.parseParameters = function() {
@@ -126,21 +120,16 @@ ModifySectionPostController.prototype.applyChanges = function() {
 
 ModifySectionPostController.prototype.buildResult = function() {
 	const siteConfig = loadConfig('site').config;
-	const pageTitle = siteConfig.title + ' - ' + this.result.source.head.title + ' - Edit';
+	const pageTitle = siteConfig.title + ' - ' + this.result.source.getTitle() + ' - Edit';
 	
 	let tags = '';
-	const tagList = this.result.source.head.tags;
+	const tagList = this.result.source.getTags();
 	for (let i in tagList) {
 		if (i > 0) tags += ',';
 		tags += tagList[i];
 	}
 
-	let steps = [{name:'name', title:this.sectionText.name}];
-	const SectionOrder = load('common.SourceFile').SectionOrder;
-	for (let i in SectionOrder) {
-		const key = SectionOrder[i];
-		steps.push({name: key, title: this.sectionText[key]});
-	}
+	let steps = load('common.BizShared').buildSteps();
 
 	let model = {
 		template: this.params.step === 'name'? 'page/name': 'page/section',
@@ -149,10 +138,10 @@ ModifySectionPostController.prototype.buildResult = function() {
 			customTitle: pageTitle,
 			step: this.params.step,
 			steps: steps,
-			algoName: this.result.source.head.title,
+			algoName: this.result.source.getTitle(),
 			algoTags: tags,
 			algoContent: this.result.source.toString(),
-			algoMod: this.result.source.sections[this.params.step],
+			algoMod: this.result.source.getSection(this.params.step),
 			isNew: this.result.isNew
 		}
 	};

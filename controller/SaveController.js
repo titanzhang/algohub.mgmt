@@ -111,6 +111,7 @@ SaveController.prototype.saveFile = function() {
 				return Git.commit(sourceFile.getRelativePath());
 			})
 			.then( () => {
+				return Promise.resolve({});
 				return Git.push();
 			});
 	} catch(e) {
@@ -120,10 +121,9 @@ SaveController.prototype.saveFile = function() {
 };
 
 SaveController.prototype.buildResult = function() {
-	const siteConfig = loadConfig('site').config;
-	const link = siteConfig.articlepool + '/' + this.result.source.algoToFileName(this.result.source.head.title) + '.html';
-
-	return Promise.resolve({link: link});
+	return Promise.resolve({
+		link: load('common.BizShared').buildArticleLink(this.result.source)
+	});
 };
 
 

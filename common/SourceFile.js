@@ -5,6 +5,11 @@ var Sections = {
 	PCODE: 'section_pseudocode'
 };
 var SectionOrder = [Sections.DESC, Sections.COMP, Sections.PCODE];
+var SectionText = {};
+SectionText['name'] = 'Name/Tags';
+SectionText[Sections.DESC] = 'Description';
+SectionText[Sections.COMP] = 'Complexity';
+SectionText[Sections.PCODE] = 'Pseudo Code';
 
 var SourceTemplate = {
 	header:
@@ -45,6 +50,18 @@ SourceFile.prototype.setTags = function(tags) {
 		myTags.push(item);
 	});
 };
+
+SourceFile.prototype.getTitle = function() {
+	return this.head.title;
+};
+
+SourceFile.prototype.getTags = function() {
+	return this.head.tags;
+};
+
+SourceFile.prototype.getSection = function(name) {
+	return this.sections[name];
+}
 
 SourceFile.prototype.isSectionValid = function(name) {
 	for (let i in Sections) {
@@ -216,3 +233,4 @@ SourceFile.prototype.save = function() {
 module.exports.File = SourceFile;
 module.exports.Sections = Sections;
 module.exports.SectionOrder = SectionOrder;
+module.exports.SectionText = SectionText;
