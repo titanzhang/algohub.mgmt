@@ -14,7 +14,7 @@ BizShared.buildSteps = function() {
 
 BizShared.buildArticleLink = function(sourceFile) {
 	const siteConfig = loadConfig('site').config;
-	return siteConfig.articlepool + '/' + sourceFile.algoToFileName(sourceFile.getTitle()) + '.html';
+	return siteConfig.articlepool + '/algo/' + sourceFile.algoToFileName(sourceFile.getTitle()) + '.html';
 };
 
 module.exports.buildSteps = BizShared.buildSteps;
