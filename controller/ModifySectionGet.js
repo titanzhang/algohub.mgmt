@@ -7,6 +7,7 @@ module.exports = function(request, response) {
 		if (error.type === 'redirect') {
 			response.redirect(error.url);
 		} else {
+			load('common.Utils').log(request.originalUrl, error.message);
 			response.render('page/error', {
 				site: loadConfig('site').config,
 				customTitle: 'Page Error',

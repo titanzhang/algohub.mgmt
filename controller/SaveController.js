@@ -7,6 +7,7 @@ module.exports = function(request, response) {
 	};
 
 	var renderError = function(error) {
+		load('common.Utils').log(request.originalUrl, error.message);
 		response.send({
 			status: false,
 			message: error.message
@@ -111,7 +112,6 @@ SaveController.prototype.saveFile = function() {
 				return Git.commit(sourceFile.getRelativePath());
 			})
 			.then( () => {
-				return Promise.resolve({});
 				return Git.push();
 			});
 	} catch(e) {

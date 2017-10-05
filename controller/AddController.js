@@ -5,6 +5,7 @@ module.exports = function(request, response) {
 			response.render(result.template, result.result);
 		})
 		.catch( (error) => {
+			load('common.Utils').log(request.originalUrl, error.message);
 			response.render('page/error', {
 				site: loadConfig('site').config,
 				customTitle: 'Page Error',
