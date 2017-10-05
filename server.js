@@ -31,22 +31,9 @@ app.get(siteconfig.mgmtpath + ':name/:step', load('controller.ModifySectionGet')
 app.post(siteconfig.mgmtpath + ':name/:step', urlencodedParser, load('controller.ModifySectionPost'));
 app.post(siteconfig.mgmtpath + 'save', urlencodedParser, load('controller.SaveController'));
 
-
 // Handle 404
-app.get('*', function(req, res) {
-	res.status(404);
-	if (req.accepts('html')) {
-		res.render('404', {url: req.url});
-		return;
-	}
-
-	if (req.accepts('json')) {
-		res.send({error: 'Not found'});
-		return;
-	}
-
-	res.send('Not found');
-});
+app.get('*', load('controller.404'));
+app.post('*', load('controller.404'));
 
 var ahServer = app.listen(loadConfig('server').port, function() {
 	console.log('Server is listening on port ' + loadConfig('server').port);
