@@ -121,7 +121,7 @@ SaveController.prototype.saveFile = function() {
 
 SaveController.prototype.buildResult = function() {
 	const siteConfig = loadConfig('site').config;
-	const link = siteConfig.articlepool + '/' + this.result.source.algoToFileName(this.result.source.head.title);
+	const link = siteConfig.articlepool + '/' + this.result.source.algoToFileName(this.result.source.head.title) + '.html';
 
 	return Promise.resolve({link: link});
 };
