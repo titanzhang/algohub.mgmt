@@ -7,9 +7,11 @@ module.exports = function(request, response) {
 		if (error.type === 'redirect') {
 			response.redirect(error.url);
 		} else {
-			response.send({
-				status: false,
-				message: error.message
+			response.render('page/error', {
+				site: loadConfig('site').config,
+				customTitle: 'Page Error',
+				errorTitle: 'This page is temporary unavailable',
+				errorMessage: 'The page you visited may be broken, or under maintanence.'
 			});
 		}
 	};

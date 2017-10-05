@@ -5,7 +5,12 @@ module.exports = function(request, response) {
 			response.render(result.template, result.result);
 		})
 		.catch( (error) => {
-			//TODO: error page
+			response.render('page/error', {
+				site: loadConfig('site').config,
+				customTitle: 'Page Error',
+				errorTitle: 'This page is temporary unavailable',
+				errorMessage: 'The page you visited may be broken, or under maintanence.'
+			});
 		});
 };
 
