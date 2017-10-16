@@ -130,7 +130,7 @@ SourceFile.prototype.toString = function() {
 	// Footer
 	let footer = SourceTemplate.footer;
 
-	return header + contents + footer;
+	return (header + contents + footer).replace(/\r\n/g, '\n').replace(/\r/g, '\n');
 };
 
 SourceFile.prototype.loadDefault = function(algoName) {
