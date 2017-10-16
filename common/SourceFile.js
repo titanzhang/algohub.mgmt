@@ -22,6 +22,7 @@ var SourceTemplate = {
 		'title: {title}\n' +
 		'tags: [{tags}]\n' +
 		'index: true\n' +
+		'comments: true\n' +
 		'---\n',
 
 	section:
