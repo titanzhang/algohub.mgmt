@@ -224,9 +224,7 @@ class SourceFile {
 
 }
 
-module.exports = {
-	File: SourceFile,
-	Sections: Sections,
-	SectionOrder: SectionOrder,
-	SectionText: SectionText
-};
+module.exports.File = SourceFile;
+module.exports.Sections = Sections;
+module.exports.SectionOrder = SectionOrder;
+module.exports.SectionText = SectionText;
