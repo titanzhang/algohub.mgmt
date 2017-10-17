@@ -109,6 +109,9 @@ ModifySectionPostController.prototype.applyChanges = function() {
 				return Promise.reject({message: 'Format error'});
 			}
 			sourceFile.setSection(this.params.algoSection, this.params.algoMod);
+			if (self.params.algoTags !== undefined) {
+				sourceFile.setTags(self.params.algoTags);
+			}
 			return {};
 		}
 
@@ -131,6 +134,7 @@ ModifySectionPostController.prototype.buildResult = function() {
 	}
 
 	let steps = load('common.BizShared').buildSteps();
+	const allTags = load('common.BizShared').getAlgoTags();
 
 	let model = {
 		template: this.params.step === 'name'? 'page/name': 'page/section',
@@ -141,6 +145,8 @@ ModifySectionPostController.prototype.buildResult = function() {
 			steps: steps,
 			algoName: this.result.source.getTitle(),
 			algoTags: tags,
+			tagList: tagList,
+			allTags: allTags,
 			algoContent: this.result.source.toString(),
 			algoMod: this.result.source.getSection(this.params.step),
 			isNew: this.result.isNew

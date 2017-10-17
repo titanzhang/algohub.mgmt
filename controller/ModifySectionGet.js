@@ -95,6 +95,7 @@ ModifySectionGetController.prototype.buildResult = function() {
 		}
 
 		const steps = load('common.BizShared').buildSteps();
+		const allTags = load('common.BizShared').getAlgoTags();
 
 		let model = {
 			template: this.params.step === 'name'? 'page/name': 'page/section',
@@ -105,6 +106,8 @@ ModifySectionGetController.prototype.buildResult = function() {
 				steps: steps,
 				algoName: this.result.source.getTitle(),
 				algoTags: tags,
+				tagList: tagList,
+				allTags: allTags,
 				algoContent: this.result.source.toString(),
 				algoMod: this.result.source.getSection(this.params.step),
 				isNew: this.result.isNew

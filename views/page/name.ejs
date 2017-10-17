@@ -18,13 +18,17 @@
             <label for="algoName">Algorithm name</label>
             <input type="text" class="form-control" id="algoName" name="algoName" placeholder="Algorithm name" <% if (locals.algoName !== undefined) { %> value="<%= algoName %>" <% } %> <%if (!isNew){%>readonly<%}%>
           </div>
+          <hr/>
           <div class="form-group">
-            <label for="algoTags">Associated tags</label>
-            <input type="text" class="form-control" id="algoTags" name="algoTags" placeholder="tag1,tag2,tag3 ..." <% if (locals.algoTags !== undefined) { %>value="<%= algoTags %>"<% } %>>
+            <%- include('../module/tags', {tagList: tagList.join(','), allTags: allTags}) %>
+            <input type="hidden" class="form-control" id="algoTags" name="algoTags" <% if (locals.algoTags !== undefined) { %>value="<%= algoTags %>"<% } %>>
           </div>
-          <button type="button" class="btn btn-primary" ahlink="edit" ahaction="section_desc">Next</button>
-          <button type="button" class="btn btn-primary" ahlink="finish" id="linkFinish">Finish</button>
-          <% if (locals.algoContent !== undefined){ %><input type="hidden" name="algoAll" value="<%= algoContent %>" /><% } %>
+          <hr/>
+          <div class="form-group">
+            <button type="button" class="btn btn-primary" ahlink="edit" ahaction="section_desc">Next</button>
+            <button type="button" class="btn btn-primary" ahlink="finish" id="linkFinish">Finish</button>
+            <% if (locals.algoContent !== undefined){ %><input type="hidden" name="algoAll" value="<%= algoContent %>" /><% } %>
+          </div>
         </form>
         <script>
           var editFormConfig = {
@@ -44,6 +48,7 @@
       <%- include('../footer') %>
     </div>
     <script src="<%= site.jspool %>/dialog.js"></script>
+    <script src="<%= site.jspool %>/tags.js"></script>
     <script src="<%= site.jspool %>/pageName.js"></script>
   </body>
 </html>

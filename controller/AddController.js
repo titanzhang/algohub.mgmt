@@ -22,6 +22,7 @@ AddController.prototype.run = function() {
 	const siteConfig = loadConfig('site').config;
 	const pageTitle = siteConfig.title + ' - New';
 	const steps = load('common.BizShared').buildSteps();
+	const allTags = load('common.BizShared').getAlgoTags();
 
 	return Promise.resolve({
 		template: 'page/name',
@@ -29,7 +30,9 @@ AddController.prototype.run = function() {
 			site: siteConfig,
 			customTitle: pageTitle,
 			steps: steps,
-			isNew: true
+			isNew: true,
+			tagList: [],
+			allTags: allTags
 		}
 	});
 }

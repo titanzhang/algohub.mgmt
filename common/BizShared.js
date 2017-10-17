@@ -17,5 +17,19 @@ BizShared.buildArticleLink = function(sourceFile) {
 	return siteConfig.articlepool + '/algo/' + sourceFile.algoToFileName(sourceFile.getTitle()) + '.html';
 };
 
+BizShared.getAlgoTags = function() {
+	return [
+		'Divide and Conquer',
+		'Greedy',
+		'Dynamic Programming',
+		'Approximation',
+		'Search',
+		'Sort',
+		'Graph',
+		'Other'
+	];
+};
+
 module.exports.buildSteps = BizShared.buildSteps;
 module.exports.buildArticleLink = BizShared.buildArticleLink;
+module.exports.getAlgoTags = BizShared.getAlgoTags;

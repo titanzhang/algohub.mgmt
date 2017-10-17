@@ -1,0 +1,27 @@
+<div id="ahTags"></div>
+<div id="ahTagsTemplate" style="display:none">
+<span class="tag label label-info">
+  <span>{AHTAG}</span>
+  <a ahlink="tag" ahdata="{AHTAG}"><i class="remove glyphicon glyphicon-remove-sign glyphicon-white"></i></a> 
+</span>
+</div>
+<div class="dropdown">
+  <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+    Add Tag
+    <span class="caret"></span>
+  </button>
+  <ul class="dropdown-menu">
+    <% for (var i in allTags) { %>
+    <% var tag = allTags[i]; %>
+    <li><a href="#" ahlink="addtag" ahdata="<%= tag %>"><%= tag %></a></li>
+    <% } %>
+  </ul>
+</div>
+<script>
+var tagsConfig = {
+  containerID: "ahTags",
+  templateID: "ahTagsTemplate",
+  list: '<%= tagList %>'
+};
+ahjs.addConfig('tagsConfig', tagsConfig);
+</script>
