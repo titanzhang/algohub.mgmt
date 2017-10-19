@@ -111,6 +111,25 @@ class SaveController {
 		}
 	}
 
+	async updateIndex() {
+		let apiUrl;
+		
+		try {
+			const Curl = load('common.Curl');
+			const link = encodeURIComponent(load('common.BizShared').buildArticleLink(this.result.source));
+			const title = encodeURIComponent(this.result.source.title);
+			const tags = encodeURIComponent(this.result.source.tags.join(','));
+			apiUrl = loadConfig('api').searchUpdateAPI + '/' + link + '/' + title + '/' + tags;
+
+			const httpReturn = await Curl.get(apiUrl, 2000);
+			return JSON.parse(httpReturn.data).status;
+		} catch(e) {
+			load('common.Utils').log('SaveController.updateIndex', e.message);
+			load('common.Utils').log('SaveController.updateIndex', apiUrl);
+			return false;
+		}
+	}
+
 	async buildResult() {
 		return {
 			link: load('common.BizShared').buildArticleLink(this.result.source)
@@ -121,7 +140,9 @@ class SaveController {
 		try {
 			await this.parseParameters();
 			await this.applyChanges();
-			await this.saveFile();
+			// await this.saveFile();
+			// await this.updateIndex();
+			await Promise.all([this.saveFile(), this.updateIndex()]);
 			return this.buildResult();
 		} catch(e) {
 			throw e;
