@@ -1,3 +1,13 @@
+<!--div class="input-group input-group-tag">
+  <span class="input-group-addon">
+    <span class="tag label label-info">
+      <span>Greedy</span>
+      <a ahlink="tag" ahdata="{AHTAG}"><i class="remove glyphicon glyphicon-remove-sign glyphicon-white"></i></a> 
+    </span>
+  </span>
+  <input typpe="text" class="form-control">
+</div-->
+
 <div id="ahTags"></div>
 <div id="ahTagsTemplate" style="display:none">
 <span class="tag label label-info">
@@ -10,16 +20,27 @@
     Add Tag
     <span class="caret"></span>
   </button>
-  <ul class="dropdown-menu">
+  <ul class="dropdown-menu col-sm-3">
     <% for (var i in allTags) { %>
     <% var tag = allTags[i]; %>
-    <li><a href="javascript:void()" ahlink="addtag" ahdata="<%= tag %>"><%= tag %></a></li>
+    <li><a href="javascript:void(0)" ahlink="addtag" ahdata="<%= tag %>"><%= tag %></a></li>
     <% } %>
+    <li role="separator" class="divider"></li>
+    <li class="input-group">
+      <input type="text" class="form-control" maxlength="20" placeholder="Customized Tag" id="ahCustomizedTag">
+      <span class="input-group-btn">
+        <button class="btn btn-default" type="button" id="ahCustTagBt">
+          <span class="glyphicon glyphicon-plus"></span>
+        </button>
+      </span>
+    </li>
   </ul>
 </div>
 <script>
 var tagsConfig = {
   containerID: "ahTags",
+  cTagID: "ahCustomizedTag",
+  cTagBtID: "ahCustTagBt",
   templateID: "ahTagsTemplate",
   list: '<%= tagList %>'
 };

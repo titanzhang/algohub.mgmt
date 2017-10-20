@@ -24,9 +24,7 @@ BizShared.getAlgoTags = function() {
 		'Dynamic Programming',
 		'Approximation',
 		'Search',
-		'Sort',
-		'Graph',
-		'Other'
+		'Sort'
 	];
 };
 
