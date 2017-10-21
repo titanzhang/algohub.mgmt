@@ -4,6 +4,7 @@ var express = require('express');
 var app = express();
 var path = require('path');
 var bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 const hostname = require('os').hostname();
 
 app.set('x-powered-by', false)
@@ -17,6 +18,7 @@ app.use( (request, response, next) => {
 	next();
 });
 
+app.use(cookieParser());
 // Static content settings
 // app.use(express.static(path.join(__dirname, 'static')));
 
@@ -30,6 +32,8 @@ app.get(siteconfig.mgmtpath + 'add', load('controller.AddController'));
 app.get(siteconfig.mgmtpath + ':name/:step', load('controller.ModifySectionGet'));
 app.post(siteconfig.mgmtpath + ':name/:step', urlencodedParser, load('controller.ModifySectionPost'));
 app.post(siteconfig.mgmtpath + 'save', urlencodedParser, load('controller.SaveController'));
+app.post(siteconfig.userpath + 'login', urlencodedParser, load('controller.UserLogin'));
+app.get(siteconfig.userpath + 'checkLogin', load('controller.UserCheckLogin'));
 
 // Handle 404
 app.get('*', load('controller.404'));

@@ -42,8 +42,8 @@ if (currentStepTitle.length === 0) {
         </form>
         <script>
           var editFormConfig = {
-            baseUrl: '/',
-            saveUrl: '/save',
+            baseUrl: '<%= site.mgmtpath %>',
+            saveUrl: '<%= site.mgmtpath %>save',
             algoName: '<%= algoName %>',
             formId: 'editForm',
             editorId: 'algoEditor',
