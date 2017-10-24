@@ -1,13 +1,3 @@
-<!--div class="input-group input-group-tag">
-  <span class="input-group-addon">
-    <span class="tag label label-info">
-      <span>Greedy</span>
-      <a ahlink="tag" ahdata="{AHTAG}"><i class="remove glyphicon glyphicon-remove-sign glyphicon-white"></i></a> 
-    </span>
-  </span>
-  <input typpe="text" class="form-control">
-</div-->
-
 <div id="ahTags"></div>
 <div id="ahTagsTemplate" style="display:none">
 <span class="tag label label-info">
@@ -37,12 +27,11 @@
   </ul>
 </div>
 <script>
-var tagsConfig = {
+ahjs.addConfig('tagsConfig', {
   containerID: "ahTags",
   cTagID: "ahCustomizedTag",
   cTagBtID: "ahCustTagBt",
   templateID: "ahTagsTemplate",
-  list: '<%= tagList %>'
-};
-ahjs.addConfig('tagsConfig', tagsConfig);
+  tagList: '<%= tagList %>'
+});
 </script>

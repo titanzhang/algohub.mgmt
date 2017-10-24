@@ -1,3 +1,5 @@
+// Deprecated
+// 
 const Sections = {
 	DESC: 'section_desc',
 	COMP: 'section_complexity',
@@ -224,7 +226,7 @@ class SourceFile {
 
 }
 
-module.exports.File = SourceFile;
-module.exports.Sections = Sections;
-module.exports.SectionOrder = SectionOrder;
-module.exports.SectionText = SectionText;
+// module.exports.File = SourceFile;
+// module.exports.Sections = Sections;
+// module.exports.SectionOrder = SectionOrder;
+// module.exports.SectionText = SectionText;

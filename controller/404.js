@@ -1,12 +1,13 @@
 module.exports = function(request, response) {
 	response.status(404);
 	if (request.accepts('html')) {
-		response.render('page/error', {
-			site: loadConfig('site').config,
-			customTitle: 'Page Not Found',
-			errorTitle: 'This page isn\'t available',
-			errorMessage: 'The page you visited may be broken, or removed.'
-		});
+		response.render(
+			'page/error',
+			load('common.BizShared').buildErrorModel(
+				'Page Not Found',
+				'This page isn\'t available',
+				'The page you visited may be broken, or removed.')
+		);
 		return;
 	}
 

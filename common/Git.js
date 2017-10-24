@@ -1,3 +1,5 @@
+// Deprecated
+// 
 var nodegit = require('nodegit');
 var gitconfig = loadConfig('git').config;
 var hostname = require('os').hostname();
@@ -101,4 +103,4 @@ Git.cred = function() {
 	return callback;
 };
 
-module.exports.Git = Git;
+// module.exports.Git = Git;

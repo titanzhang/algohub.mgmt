@@ -1,3 +1,8 @@
+const SourceFile = load('common.SourceFileGithub');
+const Utils = load('common.Utils');
+const BizShared = load('common.BizShared');
+const Curl = load('common.Curl');
+
 module.exports = (request, response) => {
 	const renderPage = (result) => {
 		response.send({
@@ -7,7 +12,7 @@ module.exports = (request, response) => {
 	};
 
 	const renderError = (error) => {
-		load('common.Utils').log(request.originalUrl, error.message);
+		Utils.log(request.originalUrl, error.message);
 		response.send({
 			status: false,
 			message: error.message
@@ -32,9 +37,13 @@ class SaveController {
 		this.result = {};
 	}
 
-	async parseParameters() {
+	parseParameters() {
 		try {
 			const request = this.request;
+
+			if (request.body.algoModifier !== undefined) {
+				this.params.modifier = request.body.algoModifier.trim();
+			}
 
 			// From section page
 			// algoAll
@@ -53,7 +62,7 @@ class SaveController {
 			// From name page
 			// algoName
 			if (request.body.algoName !== undefined) {
-				this.params.algoName = request.body.algoName;
+				this.params.algoName = request.body.algoName.trim();
 			}
 			// algoTags
 			if (request.body.algoTags !== undefined) {
@@ -63,50 +72,80 @@ class SaveController {
 					this.params.algoTags.push(v.trim());
 				}
 			}
+
+			if (!this.params.algoAll && !this.params.algoName) {
+				throw new Error('Content and Name are both empty');
+			}
+
 		} catch(e) {
-			load('common.Utils').log('SaveController.parseParameters', e);
+			Utils.log('SaveController.parseParameters', e);
 			throw new Error('Internal Error');
 		}
 	}
 
 	async applyChanges() {
 		try {
-			const SourceFile = load('common.SourceFile');
 			const sourceFile = new SourceFile.File();
 			this.result.source = sourceFile;
 
-			if (this.params.algoAll === undefined) {
-				await load('common.Git').Git.updateLocal();
-				await sourceFile.loadFromFile(this.params.algoName);
-				if (this.params.algoTags !== undefined) {
-					sourceFile.setTags(this.params.algoTags);
+			// Get algoName by parsing content or through parameter
+			let algoName;
+			if (this.params.algoAll) {
+				if (!sourceFile.loadFromString(this.params.algoAll)) {
+					throw new Error('SaveController.applyChange::Format error');
+				}
+				algoName = sourceFile.title;
+			} else if (this.params.algoName) {
+				algoName = this.params.algoName;
+			} else {
+				// Should not happen, already checked in parseParameters
+				throw new Error('SaveController.applyChange::Empty file');
+			}
+
+			// Combine online/local contents
+			const onlineFile = new SourceFile.File();
+			const loadResult = await onlineFile.loadFromFile(algoName);
+			if (!loadResult.new) {
+				// Existing file
+				if (this.params.algoAll) {
+					sourceFile.metaData = onlineFile.metaData;
+				} else {
+					sourceFile.copy(onlineFile);
 				}
 			} else {
-				if (!sourceFile.loadFromString(this.params.algoAll)) {
-					throw new Error('Format error');
+				// New file
+				if (!this.params.algoAll) {
+					sourceFile.createDefaultContent(algoName);
+				} else {
+					sourceFile.loadFromString(this.params.algoAll);
 				}
-				if (this.params.algoTags !== undefined) {
-					sourceFile.setTags(this.params.algoTags);
-				}
+			}
+
+			if (this.params.algoTags !== undefined) {
+				sourceFile.setTags(this.params.algoTags);
+			}
+
+			if ((this.params.algoMod !== undefined) && this.params.algoSection) {
 				sourceFile.setSection(this.params.algoSection, this.params.algoMod);
 			}
+
+			sourceFile.modifier = this.params.modifier;
+			sourceFile.modtime = new Date();
+
+			// Check if something is changed
+			return loadResult.new || (sourceFile.getDigest() !== onlineFile.getDigest());
+
 		} catch(e) {
-			load('common.Utils').log('SaveController.applyChanges', e);
+			Utils.log('SaveController.applyChanges', e);
 			throw new Error('Internal Error');
 		}
 	}
 
 	async saveFile() {
 		try {
-			const sourceFile = this.result.source;
-			const Git = load('common.Git').Git;
-
-			await Git.updateLocal();
-			await sourceFile.save();
-			await Git.commit(sourceFile.getRelativePath());
-			await Git.push();
+			await this.result.source.save();
 		} catch(e) {
-			load('common.Utils').log('SaveController.applyChanges', e);
+			Utils.log('SaveController.saveFile', e);
 			throw new Error('Internal Error');
 		}
 	}
@@ -115,8 +154,7 @@ class SaveController {
 		let apiUrl;
 		
 		try {
-			const Curl = load('common.Curl');
-			const link = encodeURIComponent(load('common.BizShared').buildArticleLink(this.result.source));
+			const link = encodeURIComponent(BizShared.buildArticleLink(this.result.source));
 			const title = encodeURIComponent(this.result.source.title);
 			const tags = encodeURIComponent(this.result.source.tags.join(','));
 			apiUrl = loadConfig('api').searchUpdateAPI + '/' + link + '/' + title + '/' + tags;
@@ -124,25 +162,25 @@ class SaveController {
 			const httpReturn = await Curl.get(apiUrl, 2000);
 			return JSON.parse(httpReturn.data).status;
 		} catch(e) {
-			load('common.Utils').log('SaveController.updateIndex', e.message);
-			load('common.Utils').log('SaveController.updateIndex', apiUrl);
+			Utils.log('SaveController.updateIndex', e.message);
+			Utils.log('SaveController.updateIndex', apiUrl);
 			return false;
 		}
 	}
 
-	async buildResult() {
+	buildResult() {
 		return {
-			link: load('common.BizShared').buildArticleLink(this.result.source)
+			link: BizShared.buildArticleLink(this.result.source)
 		};
 	}
 
 	async run() {
 		try {
-			await this.parseParameters();
-			await this.applyChanges();
-			// await this.saveFile();
-			// await this.updateIndex();
-			await Promise.all([this.saveFile(), this.updateIndex()]);
+			this.parseParameters();
+			const isChanged = await this.applyChanges();
+			if (isChanged) {
+				await Promise.all([this.saveFile(), this.updateIndex()]);
+			}
 			return this.buildResult();
 		} catch(e) {
 			throw e;

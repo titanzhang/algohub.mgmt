@@ -1,3 +1,4 @@
+<% const pageName = 'MgmtContentSection'; %>
 <%
 var nextStep = '', currentStepTitle = '';
 for (let i = 0; i < steps.length - 1; i ++) {
@@ -13,8 +14,7 @@ if (currentStepTitle.length === 0) {
 <!DOCTYPE html>
 <html>
   <head>
-    <%- include('../html_head', {customTitle:customTitle}) %>
-    <link href="<%= site.csspool %>/simplemde.min.css" rel="stylesheet">
+    <%- include('../html_head', {customTitle:customTitle, site:site, pageName:pageName}) %>
   </head>
 
   <body>
@@ -30,35 +30,33 @@ if (currentStepTitle.length === 0) {
         <form class="well" id="editForm" method="post">
           <div class="form-group">
             <label for="algoContent"><%= currentStepTitle %></label>
-            <textarea class='form-control' id="algoEditor"></textarea>
+            <%- include('../module/mdEditor') %>
           </div>
-          <% if (nextStep.length > 0) { %>
-          <button type="button" class="btn btn-primary" ahlink="edit" ahaction="<%= nextStep %>">Next</button>
-          <% } %>
-          <button type="button" id="linkFinish" class="btn btn-primary" ahlink="finish">Finish</button>
+          <div class="input-group col-sm-4">
+            <% if (nextStep.length > 0) { %>
+            <span class="input-group-btn"><button type="button" class="btn btn-primary" ahlink="edit" ahaction="<%= nextStep %>">Next</button></span>
+            <% } %>
+            <%- include('../module/userNameInput', {userLoginAPI: api.userLoginAPI, userCheckLoginAPI: api.userCheckLoginAPI}) %>
+            <span class="input-group-btn"><button type="button" class="btn btn-primary" ahlink="finish">Finish</button></span>
+          </div>
+          
           <input type="hidden" name="algoAll" value="<%= algoContent %>" />
           <input type="hidden" name="algoSection" value="<%= step %>" />
           <input type="hidden" id="algoMod" name="algoMod" value="<%= algoMod %>" />
         </form>
         <script>
-          var editFormConfig = {
+          ahjs.addConfig('editFormConfig', {
             baseUrl: '<%= site.mgmtpath %>',
             saveUrl: '<%= site.mgmtpath %>save',
             algoName: '<%= algoName %>',
-            formId: 'editForm',
-            editorId: 'algoEditor',
             modId: 'algoMod',
-            finishId: 'linkFinish'
-          };
-          ahjs.addConfig('editFormConfig', editFormConfig);
+            formId: 'editForm'
+          });
         </script>
         <%- include('../module/dialog') %>
       <!-- Page footer -->
       <hr/>
-      <%- include('../footer') %>
+      <%- include('../footer', {site:site, pageName:pageName}) %>
     </div>
-    <script src="<%= site.jspool %>/simplemde.min.js"></script>
-    <script src="<%= site.jspool %>/dialog.js"></script>
-    <script src="<%= site.jspool %>/pageSection.js"></script>
   </body>
 </html>

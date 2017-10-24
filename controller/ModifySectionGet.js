@@ -1,3 +1,7 @@
+const SourceFile = load('common.SourceFileGithub');
+const Utils = load('common.Utils');
+const BizShared = load('common.BizShared');
+
 module.exports = (request, response) => {
 	const renderPage = (result) => {
 		response.render(result.template, result.result);
@@ -7,13 +11,8 @@ module.exports = (request, response) => {
 		if (error.type === 'redirect') {
 			response.redirect(error.url);
 		} else {
-			load('common.Utils').log(request.originalUrl, error.message);
-			response.render('page/error', {
-				site: loadConfig('site').config,
-				customTitle: 'Page Error',
-				errorTitle: 'This page is temporary unavailable',
-				errorMessage: 'The page you visited may be broken, or under maintanence.'
-			});
+			Utils.log(request.originalUrl, error.message);
+			response.render('page/error', BizShared.buildErrorModel());
 		}
 	};
 
@@ -35,7 +34,7 @@ class ModifySectionGetController {
 		this.result = {};
 	}
 
-	async parseParameters() {
+	parseParameters() {
 		try {
 			const request = this.request;
 
@@ -43,7 +42,7 @@ class ModifySectionGetController {
 			this.params.algoName = request.params.name;
 
 			// URL: step
-			const Sections = load('common.SourceFile').Sections;
+			const Sections = SourceFile.Sections;
 			let found = false;
 			for (let section in Sections) {
 				if (Sections[section].toLowerCase() === request.params.step) {
@@ -61,38 +60,41 @@ class ModifySectionGetController {
 
 			return {};
 		} catch(e) {
-			load('common.Utils').log('ModifySectionGetController.parseParameters', e);
+			Utils.log('ModifySectionGetController.parseParameters', e);
 			throw new Error('Internal Error')
 		}
 	}
 
 	async loadAlgoFile() {
 		try {
-			const SourceFile = load('common.SourceFile').File;
-			const sourceFile = new SourceFile();
+			const sourceFile = new SourceFile.File();
 			this.result.source = sourceFile;
 
-			await load('common.Git').Git.updateLocal();
 			const result = await sourceFile.loadFromFile(this.params.algoName);
+			if (result.new) {
+				sourceFile.createDefaultContent(this.params.algoName);
+			}
 			return {isNew: result.new};
 		} catch(e) {
-			load('common.Utils').log('ModifySectionGetController.loadAlgoFile', e);
+			Utils.log('ModifySectionGetController.loadAlgoFile', e);
 			throw new Error('Internal Error');
 		}
 	}
 
-	async buildResult() {
+	buildResult() {
 		try {
 			const siteConfig = loadConfig('site').config;
-			const pageTitle = siteConfig.title + ' - ' + this.result.source.getTitle() + ' - Edit';
+			const apiConfig = loadConfig('api');
+			const pageTitle = `${siteConfig.title} - ${this.result.source.title} - Edit`;
 			const tags = this.result.source.tags.join(',');
-			const steps = load('common.BizShared').buildSteps();
-			const allTags = load('common.BizShared').getAlgoTags();
+			const steps = BizShared.buildSteps();
+			const allTags = BizShared.getAlgoTags();
 
 			return {
 				template: this.params.step === 'name'? 'page/name': 'page/section',
 				result: {
 					site: siteConfig,
+					api: apiConfig,
 					customTitle: pageTitle,
 					step: this.params.step,
 					steps: steps,
@@ -106,14 +108,14 @@ class ModifySectionGetController {
 				}
 			};
 		} catch (e) {
-			load('common.Utils').log('ModifySectionGetController.buildResult', e);
+			Utils.log('ModifySectionGetController.buildResult', e);
 			throw new Error('Internal Error');
 		}
 	}
 
 	async run() {
 		try {
-			await this.parseParameters();
+			this.parseParameters();
 			const loadResult = await this.loadAlgoFile();
 			this.result.isNew = loadResult.isNew;
 			if (loadResult.isNew && this.params.step !== 'name') {

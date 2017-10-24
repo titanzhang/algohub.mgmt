@@ -1,7 +1,8 @@
+<% const pageName = 'MgmtContentName'; %>
 <!DOCTYPE html>
 <html>
   <head>
-    <%- include('../html_head', {customTitle:customTitle}) %>
+    <%- include('../html_head', {customTitle:customTitle, site:site, pageName:pageName}) %>
   </head>
 
   <body>
@@ -25,30 +26,28 @@
           </div>
           <hr/>
           <div class="form-group">
-            <button type="button" class="btn btn-primary" ahlink="edit" ahaction="section_desc">Next</button>
-            <button type="button" class="btn btn-primary" ahlink="finish" id="linkFinish">Finish</button>
+            <div class="input-group col-sm-4">
+              <span class="input-group-btn"><button type="button" class="btn btn-primary" ahlink="edit" ahaction="section_desc">Next</button></span>
+              <%- include('../module/userNameInput', {userLoginAPI: api.userLoginAPI, userCheckLoginAPI: api.userCheckLoginAPI}) %>
+              <span class="input-group-btn"><button type="button" class="btn btn-primary" ahlink="finish">Finish</button></span>
+            </div>
             <% if (locals.algoContent !== undefined){ %><input type="hidden" name="algoAll" value="<%= algoContent %>" /><% } %>
           </div>
         </form>
         <script>
-          var editFormConfig = {
+          ahjs.addConfig('editFormConfig', {
             baseUrl: '<%= site.mgmtpath %>',
             saveUrl: '<%= site.mgmtpath %>save',
             formId: 'editForm',
             nameId: 'algoName',
-            tagsId: 'algoTags',
-            finishId: 'linkFinish'
-          };
-          ahjs.addConfig('editFormConfig', editFormConfig);
+            tagsId: 'algoTags'
+          });
         </script>
       </div>
       <%- include('../module/dialog') %>
       <!-- Page footer -->
       <hr/>
-      <%- include('../footer') %>
+      <%- include('../footer',{site:site, pageName:pageName}) %>
     </div>
-    <script src="<%= site.jspool %>/dialog.js"></script>
-    <script src="<%= site.jspool %>/tags.js"></script>
-    <script src="<%= site.jspool %>/pageName.js"></script>
   </body>
 </html>

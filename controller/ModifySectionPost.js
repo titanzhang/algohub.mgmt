@@ -1,3 +1,7 @@
+const SourceFile = load('common.SourceFileGithub');
+const Utils = load('common.Utils');
+const BizShared = load('common.BizShared');
+
 module.exports = (request, response) => {
 	const renderPage = (result) => {
 		response.render(result.template, result.result);
@@ -7,13 +11,8 @@ module.exports = (request, response) => {
 		if (error.type === 'redirect') {
 			response.redirect(error.url);
 		} else {
-			load('common.Utils').log(request.originalUrl, error.message);
-			response.render('page/error', {
-				site: loadConfig('site').config,
-				customTitle: 'Page Error',
-				errorTitle: 'This page is temporary unavailable',
-				errorMessage: 'The page you visited may be broken, or under maintanence.'
-			});
+			Utils.log(request.originalUrl, error.message);
+			response.render('page/error', BizShared.buildErrorModel());
 		}
 	};
 
@@ -43,7 +42,7 @@ class ModifySectionPostController {
 			this.params.algoName = request.params.name;
 
 			// URL: step
-			const Sections = load('common.SourceFile').Sections;
+			const Sections = SourceFile.Sections;
 			let found = false;
 			for (let section in Sections) {
 				if (Sections[section].toLowerCase() === request.params.step) {
@@ -81,22 +80,21 @@ class ModifySectionPostController {
 				this.params.algoMod = request.body.algoMod === undefined? '': request.body.algoMod;
 			}
 		} catch(e) {
-			load('common.Utils').log('ModifySectionPostController.parseParameters', e);
+			Utils.log('ModifySectionPostController.parseParameters', e);
 			throw new Error('Internal Error');
 		}
 	}
 
 	async applyChanges() {
 		try {
-			const SourceFile = load('common.SourceFile');
 			const sourceFile = new SourceFile.File();
 			this.result.source = sourceFile;
 			this.result.isNew = false;
 
 			if (this.params.algoAll === undefined) {
-				await load('common.Git').Git.updateLocal();
 				const loadResult = await sourceFile.loadFromFile(this.params.algoName);
 				if (loadResult.new) {
+					sourceFile.createDefaultContent(this.params.algoName);
 					this.result.isNew = true;
 				}
 				if (this.params.algoTags !== undefined) {
@@ -104,7 +102,7 @@ class ModifySectionPostController {
 				}
 			} else {
 				if (!sourceFile.loadFromString(this.params.algoAll)) {
-					throw new Error('Format error');
+					throw new Error('ModifySectionPostController.applyChanges::Format error');
 				}
 				sourceFile.setSection(this.params.algoSection, this.params.algoMod);
 				if (this.params.algoTags !== undefined) {
@@ -112,7 +110,7 @@ class ModifySectionPostController {
 				}
 			}
 		} catch(e) {
-			load('common.Utils').log('ModifySectionPostController.applyChanges', e);
+			Utils.log('ModifySectionPostController.applyChanges', e);
 			throw new Error('Internal Error');
 		}
 	}
@@ -120,15 +118,17 @@ class ModifySectionPostController {
 
 	async buildResult() {
 		const siteConfig = loadConfig('site').config;
+		const apiConfig = loadConfig('api');
 		const pageTitle = siteConfig.title + ' - ' + this.result.source.getTitle() + ' - Edit';
 		const tags = this.result.source.tags.join(',');
-		const steps = load('common.BizShared').buildSteps();
-		const allTags = load('common.BizShared').getAlgoTags();
+		const steps = BizShared.buildSteps();
+		const allTags = BizShared.getAlgoTags();
 
 		return {
 			template: this.params.step === 'name'? 'page/name': 'page/section',
 			result: {
 				site: siteConfig,
+				api: apiConfig,
 				customTitle: pageTitle,
 				step: this.params.step,
 				steps: steps,
