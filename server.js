@@ -32,8 +32,11 @@ app.get(siteconfig.mgmtpath + 'add', load('controller.AddController'));
 app.get(siteconfig.mgmtpath + ':name/:step', load('controller.ModifySectionGet'));
 app.post(siteconfig.mgmtpath + ':name/:step', urlencodedParser, load('controller.ModifySectionPost'));
 app.post(siteconfig.mgmtpath + 'save', urlencodedParser, load('controller.SaveController'));
+
 app.post(siteconfig.userpath + 'login', urlencodedParser, load('controller.UserLogin'));
 app.get(siteconfig.userpath + 'checkLogin', load('controller.UserCheckLogin'));
+
+app.post(siteconfig.commentpath + 'add', urlencodedParser, load('controller.CommentAdd'));
 
 // Handle 404
 app.get('*', load('controller.404'));
