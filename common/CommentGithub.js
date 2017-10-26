@@ -10,7 +10,6 @@ class CommentGithub {
 		try {
 			const github = new Github();
 			const json = {
-				page: page,
 				author: author,
 				content: content,
 				date: date.toISOString()
