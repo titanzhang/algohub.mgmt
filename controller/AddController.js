@@ -1,3 +1,6 @@
+const Utils = load('common.Utils');
+const BizShared = load('common.BizShared');
+
 module.exports = function(request, response) {
 	(async () => {
 		try {
@@ -5,7 +8,8 @@ module.exports = function(request, response) {
 			const result = await controller.run();
 			response.render(result.template, result.result);
 		} catch(error) {
-			load('common.Utils').log(request.originalUrl, error.message);
+			Utils.log(request.originalUrl, error.message || error);
+			Utils.log(request.originalUrl, error.stack || 'No stack');
 			response.render('page/error', load('common.BizShared').buildErrorModel());
 		}
 	})();
@@ -16,8 +20,8 @@ class AddController {
 		const siteConfig = loadConfig('site').config;
 		const apiConfig = loadConfig('api');
 		const pageTitle = siteConfig.title + ' - New';
-		const steps = load('common.BizShared').buildSteps();
-		const allTags = load('common.BizShared').getAlgoTags();
+		const steps = BizShared.buildSteps();
+		const allTags = BizShared.getAlgoTags();
 
 		return {
 			template: 'page/name',
