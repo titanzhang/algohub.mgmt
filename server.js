@@ -41,6 +41,8 @@ app.get(siteconfig.userpath + 'checkLogin', load('controller.UserCheckLogin'));
 
 app.post(siteconfig.commentpath + 'add', urlencodedParser, load('controller.CommentAdd'));
 
+app.post(siteconfig.surveypath + 'save', urlencodedParser, load('controller.SurveySave'));
+
 // Handle 404
 app.get('*', load('controller.404'));
 app.post('*', load('controller.404'));
