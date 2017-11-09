@@ -19,7 +19,7 @@ class SurveyGithub {
         json[key] = data[key];
       }
 
-			const path = require('path').join(this.path, slugify(title.trim()), `Entry${date.getTime()}.json`);
+			const path = require('path').join(this.path, slugify(title.trim(),{remove: null,lower: true}), `Entry${date.getTime()}.json`);
 
 			await github.createFile(path, JSON.stringify(json));
 		} catch(e) {
