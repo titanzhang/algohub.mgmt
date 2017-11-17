@@ -21,7 +21,7 @@ class SurveyGithub {
 
 			const path = require('path').join(this.path, slugify(title.trim(),{remove: null,lower: true}), `Entry${date.getTime()}.json`);
 
-			await github.createFile(path, JSON.stringify(json));
+			await github.createFile(path, JSON.stringify(json), 'SurveyAgent', 'NO_BUILD');
 		} catch(e) {
 			Utils.log('SurveyGithub.save', e.message || e);
 			Utils.log('SurveyGithub.save', e.stack || 'No stack');
