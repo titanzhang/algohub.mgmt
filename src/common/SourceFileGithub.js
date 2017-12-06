@@ -167,7 +167,7 @@ class SourceFile {
 	parse(stringContent) {
 		try {
 			// Parse head
-			const match = stringContent.match(/---([\s\S]*)---/);
+			const match = stringContent.match(/---([\s\S]*?)---/);
 			if (!match) return false;
 			const parseHead = yaml.safeLoad(match[1]);
 
